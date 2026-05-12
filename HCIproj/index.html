@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TaskFlow – To-Do List System</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════ AUTH SCREEN ═══════════════════ -->
+<div id="authScreen" class="screen active">
+  <div class="auth-bg"></div>
+  <div class="auth-card">
+    <div class="auth-logo">
+      <span class="logo-icon">📋</span>
+      <h1>TASKFLOW</h1>
+      <p>A Simple To-Do List System • HCI 2</p>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('login')">Login</button>
+      <button class="auth-tab" onclick="switchAuthTab('register')">Register</button>
+    </div>
+
+    <!-- Login Form -->
+    <div class="auth-form active" id="loginForm">
+      <div class="form-group">
+        <label>Username</label>
+        <input class="form-input" id="loginUser" type="text" placeholder="Enter username" autocomplete="username" />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input class="form-input" id="loginPass" type="password" placeholder="Enter password" autocomplete="current-password" />
+      </div>
+      <div class="auth-error" id="loginError"></div>
+      <button class="btn btn-primary btn-full" onclick="doLogin()">🔑 Login</button>
+    </div>
+
+    <!-- Register Form -->
+    <div class="auth-form" id="registerForm">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input class="form-input" id="regName" type="text" placeholder="Your full name" />
+      </div>
+      <div class="form-group">
+        <label>Username</label>
+        <input class="form-input" id="regUser" type="text" placeholder="Choose a username" autocomplete="username" />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input class="form-input" id="regPass" type="password" placeholder="Choose a password" autocomplete="new-password" />
+      </div>
+      <div class="form-group">
+        <label>Confirm Password</label>
+        <input class="form-input" id="regPass2" type="password" placeholder="Confirm password" autocomplete="new-password" />
+      </div>
+      <div class="auth-error" id="registerError"></div>
+      <button class="btn btn-success btn-full" onclick="doRegister()">✅ Create Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ USER APP SCREEN ═══════════════════ -->
+<div id="appScreen" class="screen">
+  <nav class="navbar">
+    <div class="nav-brand">
+      <span class="brand-icon">📋</span>
+      TASKFLOW
+    </div>
+    <div class="nav-right">
+      <div class="nav-clock" id="liveClock">--:--:-- --</div>
+      <button class="notif-btn" onclick="toggleNotifPanel()" title="Notifications">
+        🔔
+        <span class="notif-badge" id="notifBadge">0</span>
+      </button>
+      <div class="user-chip">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <span id="userDisplayName">User</span>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="doLogout()">Logout</button>
+    </div>
+  </nav>
+
+  <!-- Notification Panel -->
+  <div class="notif-panel" id="notifPanel">
+    <div class="notif-panel-header">
+      <span>🔔 Notifications</span>
+      <button class="btn btn-ghost btn-sm" onclick="clearNotifs()">Clear all</button>
+    </div>
+    <div class="notif-list" id="notifList">
+      <div class="notif-empty">No notifications yet</div>
+    </div>
+  </div>
+
+  <div class="main-wrap">
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total</div>
+        <div class="stat-value blue" id="statTotal">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Done</div>
+        <div class="stat-value green" id="statDone">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Remaining</div>
+        <div class="stat-value orange" id="statRemaining">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Overdue</div>
+        <div class="stat-value pink" id="statOverdue">0</div>
+      </div>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-label">Progress</div>
+      <div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill"></div></div>
+      <div class="progress-bar-pct" id="progressPct">0%</div>
+    </div>
+
+    <!-- Panels -->
+    <div class="panels">
+      <!-- Add Task -->
+      <div class="panel">
+        <div class="panel-header"><span>➕ Add New Task</span></div>
+        <div class="panel-body">
+          <div class="task-form">
+            <input id="taskTitle" type="text" placeholder="Task title…" />
+            <textarea id="taskDesc" placeholder="Description (optional)…"></textarea>
+            <div class="row">
+              <select id="taskPriority">
+                <option value="low">🟢 Low</option>
+                <option value="medium" selected>🟡 Medium</option>
+                <option value="high">🔴 High</option>
+              </select>
+              <input id="taskDue" type="datetime-local" />
+            </div>
+            <select id="taskRemind">
+              <option value="0">🔔 At due time</option>
+              <option value="5">⏰ 5 min before</option>
+              <option value="15" selected>⏰ 15 min before</option>
+              <option value="30">⏰ 30 min before</option>
+              <option value="60">⏰ 1 hr before</option>
+            </select>
+            <button class="btn btn-primary" onclick="addTask()">Add Task</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Task List / Schedule -->
+      <div class="panel">
+        <div class="panel-body" style="padding-top:14px">
+          <div class="tab-switch">
+            <button class="tab-btn active" onclick="switchListTab('tasks')" id="tabTasks">📝 Tasks</button>
+            <button class="tab-btn" onclick="switchListTab('schedule')" id="tabSchedule">📅 Schedule</button>
+          </div>
+
+          <!-- Tasks tab -->
+          <div id="tabTasksPane">
+            <div class="filter-bar" id="filterBar">
+              <button class="filter-chip active" onclick="setFilter('all',this)">All</button>
+              <button class="filter-chip" onclick="setFilter('pending',this)">Pending</button>
+              <button class="filter-chip" onclick="setFilter('done',this)">Completed</button>
+              <button class="filter-chip" onclick="setFilter('overdue',this)">🔴 Overdue</button>
+              <button class="filter-chip" onclick="setFilter('high',this)">High</button>
+              <button class="filter-chip" onclick="setFilter('medium',this)">Medium</button>
+              <button class="filter-chip" onclick="setFilter('low',this)">Low</button>
+            </div>
+            <div style="display:flex;justify-content:flex-end;margin-bottom:10px;">
+              <button class="btn btn-danger btn-sm" onclick="clearCompleted()">🗑️ Clear Completed</button>
+            </div>
+            <div class="task-list" id="taskList"></div>
+          </div>
+
+          <!-- Schedule tab -->
+          <div id="tabSchedulePane" style="display:none">
+            <div class="schedule-list" id="scheduleList"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ ADMIN SCREEN ═══════════════════ -->
+<div id="adminScreen" class="screen">
+  <nav class="admin-navbar">
+    <div class="admin-brand">
+      <span>🛡️</span>
+      TASKFLOW
+      <span class="admin-badge">Admin</span>
+    </div>
+    <div class="nav-right">
+      <div class="nav-clock" id="adminClock">--:--:-- --</div>
+      <div class="user-chip" style="border-color:rgba(244,114,182,0.2)">
+        <div class="user-avatar" style="background:linear-gradient(135deg,var(--accent3),var(--accent))">A</div>
+        Admin Admin
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="doLogout()">Logout</button>
+    </div>
+  </nav>
+
+  <div class="admin-main">
+    <div class="admin-stats">
+      <div class="admin-stat">
+        <div class="as-label">Registered Users</div>
+        <div class="as-value" id="adminStatUsers">0</div>
+      </div>
+      <div class="admin-stat">
+        <div class="as-label">Total Tasks</div>
+        <div class="as-value" id="adminStatTasks">0</div>
+      </div>
+      <div class="admin-stat">
+        <div class="as-label">Tasks Completed</div>
+        <div class="as-value" id="adminStatDone">0</div>
+      </div>
+    </div>
+
+    <div class="admin-table-wrap">
+      <div class="admin-table-header">
+        <h2>👥 All User Accounts</h2>
+        <input class="admin-search" id="adminSearch" type="text" placeholder="Search users…" oninput="renderAdminTable()" />
+      </div>
+      <table class="admin-table" id="adminTable">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Username</th>
+            <th>Full Name</th>
+            <th>Tasks</th>
+            <th>Done</th>
+            <th>Pending</th>
+          </tr>
+        </thead>
+        <tbody id="adminTbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ EDIT MODAL ═══════════════════ -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal">
+    <h3>✏️ Edit Task</h3>
+    <div class="modal-form">
+      <input id="editTitle" type="text" placeholder="Task title" />
+      <textarea id="editDesc" placeholder="Description (optional)"></textarea>
+      <select id="editPriority">
+        <option value="low">🟢 Low</option>
+        <option value="medium">🟡 Medium</option>
+        <option value="high">🔴 High</option>
+      </select>
+      <input id="editDue" type="datetime-local" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeEditModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEdit()">💾 Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ TOAST WRAP ═══════════════════ -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
